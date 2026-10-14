@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Details</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eaf2f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #234a80;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 25px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #ccc;
+        }
+
+        button {
+            padding: 12px 18px;
+            margin: 5px;
+            background: #234a80;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .clear-btn {
+            background: #dc3545;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1000px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #234a80;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f6fa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Visitor Details</h1>
+
+    <div class="container">
+
+        <button onclick="goHome()">Home</button>
+
+        <button class="clear-btn" onclick="clearAll()">
+            Clear All
+        </button>
+
+        <p id="visitorCount">Total Visitors: 0</p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Visitor Name</th>
+                        <th>Mobile Number</th>
+                        <th>Visitor Type</th>
+                        <th>Person to Meet</th>
+                        <th>Purpose of Visit</th>
+                        <th>Visit Date</th>
+                        <th>Visit Time</th>
+                    </tr>
+                </thead>
+
+                <tbody id="visitorTable"></tbody>
+            </table>
+        </div>
+
+        <p id="emptyMessage"></p>
+
+    </div>
+
+    <script>
+        function displayVisitors() {
+            let visitors = [];
+
+            try {
+                visitors = JSON.parse(localStorage.getItem("visitors")) || [];
+
+                if (!Array.isArray(visitors)) {
+                    visitors = [];
+                }
+            } catch (error) {
+                visitors = [];
+            }
+
+            const table = document.getElementById("visitorTable");
+            table.innerHTML = "";
+
+            document.getElementById("visitorCount").textContent =
+                "Total Visitors: " + visitors.length;
+
+            document.getElementById("emptyMessage").textContent =
+                visitors.length === 0
+                    ? "No visitor records found."
+                    : "";
+
+            visitors.forEach(function(visitor, index) {
+                const row = document.createElement("tr");
+
+                const values = [
+                    index + 1,
+                    visitor.name || "",
+                    visitor.mobile || "",
+                    visitor.type || "",
+                    visitor.person || "",
+                    visitor.purpose || "",
+                    visitor.visitDate || "Not provided",
+                    visitor.visitTime || "Not provided"
+                ];
+
+                values.forEach(function(value) {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+
+                table.appendChild(row);
+            });
+        }
+
+        function clearAll() {
+            const confirmDelete = confirm(
+                "Are you sure you want to delete all visitor details?"
+            );
+
+            if (confirmDelete) {
+                localStorage.removeItem("visitors");
+                displayVisitors();
+                alert("All visitor details cleared successfully!");
+            }
+        }
+
+        function goHome() {
+            window.location.href = "index.html";
+        }
+
+        displayVisitors();
+    </script>
+
+</body>
+</html>
